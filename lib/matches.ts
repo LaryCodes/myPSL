@@ -26,11 +26,11 @@ export function getMatchWithStatus(matchId: string): MatchWithStatus | null {
 
   const now = new Date()
   const matchTime = new Date(match.match_datetime)
-  const lockTime = new Date(matchTime.getTime() - LOCK_MINUTES * 60 * 1000)
+  const windowOpenTime = new Date(matchTime.getTime() - LOCK_MINUTES * 60 * 1000)
   
-  const timeUntilLock = lockTime.getTime() - now.getTime()
-  const predictionOpen = now < lockTime
-  const predictionClosed = now >= lockTime
+  const timeUntilLock = matchTime.getTime() - now.getTime()
+  const predictionOpen = now >= windowOpenTime && now < matchTime
+  const predictionClosed = now >= matchTime
 
   return {
     ...match,
@@ -44,11 +44,11 @@ export function getAllMatchesWithStatus(): MatchWithStatus[] {
   return matchesData.map((match: any) => {
     const now = new Date()
     const matchTime = new Date(match.match_datetime)
-    const lockTime = new Date(matchTime.getTime() - LOCK_MINUTES * 60 * 1000)
+    const windowOpenTime = new Date(matchTime.getTime() - LOCK_MINUTES * 60 * 1000)
     
-    const timeUntilLock = lockTime.getTime() - now.getTime()
-    const predictionOpen = now < lockTime
-    const predictionClosed = now >= lockTime
+    const timeUntilLock = matchTime.getTime() - now.getTime()
+    const predictionOpen = now >= windowOpenTime && now < matchTime
+    const predictionClosed = now >= matchTime
 
     return {
       ...match,
