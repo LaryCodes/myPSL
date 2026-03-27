@@ -7,9 +7,10 @@ Predict PSL match winners and earn points.
 ## Prediction Rules
 
 ### Timing
-- **Opens:** Exactly 50 minutes before match start
-- **Closes:** At match start time
-- **Window:** 50-minute prediction period
+- **Opens:** 24 hours before match start
+- **Closes:** 10 minutes before match start
+- **Window:** 24-hour prediction period
+- **Timer:** Live countdown on each match card
 - **After closing:** Cannot change prediction
 
 ### Edits

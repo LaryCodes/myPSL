@@ -18,17 +18,23 @@ export default function MatchCard({ match, userPrediction, editCount = 0, onPred
     const updateTimer = () => {
       const ms = match.time_until_lock
       if (ms <= 0) {
-        setTimeLeft('LOCKED')
+        setTimeLeft('CLOSED')
         return
       }
 
-      const hours = Math.floor(ms / (1000 * 60 * 60))
-      const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60))
-      setTimeLeft(`${hours}h ${minutes}m`)
+      const totalMinutes = Math.floor(ms / (1000 * 60))
+      const hours = Math.floor(totalMinutes / 60)
+      const minutes = totalMinutes % 60
+
+      if (hours > 0) {
+        setTimeLeft(`${hours}h ${minutes}m`)
+      } else {
+        setTimeLeft(`${minutes}m`)
+      }
     }
 
     updateTimer()
-    const interval = setInterval(updateTimer, 60000)
+    const interval = setInterval(updateTimer, 30000) // Update every 30 seconds
     return () => clearInterval(interval)
   }, [match.time_until_lock])
 
@@ -73,9 +79,9 @@ export default function MatchCard({ match, userPrediction, editCount = 0, onPred
           <div className={`text-xs font-bold px-3 py-2 rounded-lg ${
             match.prediction_closed 
               ? 'bg-red-900/70 text-red-300 border border-red-500' 
-              : 'bg-green-900/70 text-green-300 border border-green-500'
+              : 'bg-green-900/70 text-green-300 border border-green-500 animate-pulse'
           }`}>
-            {match.prediction_closed ? '🔒 LOCKED' : `⏰ ${timeLeft}`}
+            {match.prediction_closed ? '🔒 CLOSED' : `⏰ ${timeLeft}`}
           </div>
           {userPrediction && (
             <p className="text-xs text-gray-400 mt-2 bg-black/30 px-2 py-1 rounded">

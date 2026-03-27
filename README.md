@@ -6,7 +6,8 @@ A prediction app for Pakistan Super League matches. Predict winners, earn points
 
 - 🎯 Predict match winners (2 edits allowed)
 - 🏆 Dynamic leaderboard with streak bonuses
-- ⏰ 50-minute prediction window (opens 50min before, closes at match start)
+- ⏰ 24-hour prediction window (closes 10min before match)
+- ⏱️ Live countdown timer on each match
 - 🎨 Modern dark UI with glassmorphism
 - 🔒 Secure authentication
 
