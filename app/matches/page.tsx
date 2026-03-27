@@ -21,6 +21,12 @@ export default function MatchesPage() {
 
   useEffect(() => {
     loadData()
+    // Ensure cookie is set
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=3600`
+      }
+    })
   }, [])
 
   const loadData = async () => {
@@ -45,21 +51,36 @@ export default function MatchesPage() {
   }
 
   const handlePredict = async (matchId: string, team: string) => {
-    const existing = predictions.find(p => p.match_id === matchId)
-    const endpoint = existing ? '/api/predictions/update' : '/api/predictions'
-    const method = existing ? 'PUT' : 'POST'
+    try {
+      // Get fresh session
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        alert('Please login again')
+        return
+      }
 
-    const response = await fetch(endpoint, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ match_id: matchId, predicted_team: team })
-    })
+      const existing = predictions.find(p => p.match_id === matchId)
+      const endpoint = existing ? '/api/predictions/update' : '/api/predictions'
+      const method = existing ? 'PUT' : 'POST'
 
-    if (response.ok) {
-      await loadData()
-    } else {
-      const error = await response.json()
-      alert(error.error || 'Failed to save prediction')
+      const response = await fetch(endpoint, {
+        method,
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        credentials: 'include',
+        body: JSON.stringify({ match_id: matchId, predicted_team: team })
+      })
+
+      if (response.ok) {
+        await loadData()
+      } else {
+        const error = await response.json()
+        alert(error.error || 'Failed to save prediction')
+      }
+    } catch (err: any) {
+      alert('Error: ' + err.message)
     }
   }
 
@@ -79,10 +100,10 @@ export default function MatchesPage() {
     <div className="min-h-screen">
       <FloatingBackground />
       <Navbar />
-      <div className="relative z-10 max-w-7xl mx-auto p-8">
-        <h1 className="text-4xl font-bold text-psl-yellow mb-8">Complete Schedule</h1>
+      <div className="relative z-10 max-w-7xl mx-auto p-3 sm:p-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-psl-yellow mb-4">All Matches</h1>
         
-        <div className="space-y-6">
+        <div className="space-y-4">
           {matches.map(match => {
             const pred = predictions.find(p => p.match_id === match.match_id)
             return (

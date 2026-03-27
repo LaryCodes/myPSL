@@ -30,6 +30,12 @@ export default function DashboardPage() {
 
   useEffect(() => {
     loadData()
+    // Ensure cookie is set
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=3600`
+      }
+    })
   }, [])
 
   const loadData = async () => {
@@ -78,21 +84,36 @@ export default function DashboardPage() {
   }
 
   const handlePredict = async (matchId: string, team: string) => {
-    const existing = predictions.find(p => p.match_id === matchId)
-    const endpoint = existing ? '/api/predictions/update' : '/api/predictions'
-    const method = existing ? 'PUT' : 'POST'
+    try {
+      // Get fresh session
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        alert('Please login again')
+        return
+      }
 
-    const response = await fetch(endpoint, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ match_id: matchId, predicted_team: team })
-    })
+      const existing = predictions.find(p => p.match_id === matchId)
+      const endpoint = existing ? '/api/predictions/update' : '/api/predictions'
+      const method = existing ? 'PUT' : 'POST'
 
-    if (response.ok) {
-      await loadData()
-    } else {
-      const error = await response.json()
-      alert(error.error || 'Failed to save prediction')
+      const response = await fetch(endpoint, {
+        method,
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        credentials: 'include',
+        body: JSON.stringify({ match_id: matchId, predicted_team: team })
+      })
+
+      if (response.ok) {
+        await loadData()
+      } else {
+        const error = await response.json()
+        alert(error.error || 'Failed to save prediction')
+      }
+    } catch (err: any) {
+      alert('Error: ' + err.message)
     }
   }
 
@@ -114,40 +135,40 @@ export default function DashboardPage() {
       <Navbar />
       <div className="relative z-10 max-w-7xl mx-auto p-8">
         {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold mb-4" style={{
+        <div className="text-center mb-6">
+          <h1 className="text-3xl sm:text-5xl font-bold mb-2" style={{
             background: 'linear-gradient(135deg, #fbbf24, #dc2626)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text'
           }}>
-            Your Dashboard
+            Dashboard
           </h1>
-          <p className="text-gray-400 text-lg">Next 24 Hours - Don't Miss Out!</p>
+          <p className="text-gray-400 text-sm">Next 24 Hours</p>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-          <StatsCard label="Total Points" value={stats.points} icon="🏆" />
-          <StatsCard label="Predictions Made" value={stats.totalPredictions} icon="🎯" />
-          <StatsCard label="Current Streak" value={stats.currentStreak} icon="🔥" />
-          <StatsCard label="Next 24h Matches" value={matches.length} icon="⚡" />
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <StatsCard label="Points" value={stats.points} icon="🏆" />
+          <StatsCard label="Predictions" value={stats.totalPredictions} icon="🎯" />
+          <StatsCard label="Streak" value={stats.currentStreak} icon="🔥" />
+          <StatsCard label="Upcoming" value={matches.length} icon="⚡" />
         </div>
 
         {/* Upcoming Matches */}
-        <h2 className="text-3xl font-bold text-psl-yellow mb-6">⚡ Predict Now - Next 24 Hours</h2>
+        <h2 className="text-xl font-bold text-psl-yellow mb-4">⚡ Predict Now</h2>
         
         {matches.length === 0 ? (
-          <div className="glass rounded-lg p-12 text-center glow-red">
-            <p className="text-gray-300 text-2xl mb-2">✅ All caught up!</p>
-            <p className="text-gray-500">No matches in the next 24 hours</p>
-            <a href="/matches" className="inline-block mt-4 text-psl-yellow hover:text-psl-red transition">
+          <div className="glass rounded-lg p-8 text-center">
+            <p className="text-gray-300 text-lg mb-2">✅ All caught up!</p>
+            <p className="text-gray-500 text-sm mb-4">No matches in the next 24 hours</p>
+            <a href="/matches" className="inline-block text-psl-yellow hover:text-psl-red transition text-sm">
               View full schedule →
             </a>
           </div>
         ) : (
           <>
-            <div className="grid gap-6 md:grid-cols-2 mb-8">
+            <div className="space-y-4 mb-6">
               {matches.map(match => {
                 const pred = predictions.find(p => p.match_id === match.match_id)
                 return (
@@ -165,9 +186,9 @@ export default function DashboardPage() {
             <div className="text-center">
               <a 
                 href="/matches" 
-                className="inline-block px-8 py-3 glass rounded-lg text-psl-yellow hover:glow-yellow transition font-semibold"
+                className="inline-block px-6 py-3 glass rounded-lg text-psl-yellow hover:glow-yellow transition font-semibold text-sm"
               >
-                View All {getAllMatchesWithStatus().length} Matches →
+                View All Matches →
               </a>
             </div>
           </>

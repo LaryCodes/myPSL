@@ -48,10 +48,10 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 glass border-b border-red-900/30 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-4 py-3">
-        <div className="flex flex-wrap justify-between items-center gap-4">
-          <div className="flex items-center gap-4 md:gap-8">
-            <h1 className="text-xl md:text-2xl font-black tracking-tight" style={{
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 sm:py-3">
+        <div className="flex flex-wrap justify-between items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 md:gap-8">
+            <h1 className="text-base sm:text-xl md:text-2xl font-black tracking-tight" style={{
               background: 'linear-gradient(135deg, #fbbf24 0%, #dc2626 50%, #fbbf24 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -59,7 +59,7 @@ export default function Navbar() {
               backgroundSize: '200% auto',
               animation: 'shine 3s linear infinite'
             }}>
-              🏏 PSL PREDICTOR
+              🏏 PSL
             </h1>
             <div className="hidden md:flex gap-2">
               {navLinks.map(link => (
@@ -78,16 +78,16 @@ export default function Navbar() {
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => setShowProfile(true)}
-              className="px-4 py-2 rounded-full bg-gradient-to-r from-psl-yellow to-amber-500 text-black font-bold text-sm hover:shadow-lg hover:shadow-psl-yellow/50 transition-all duration-300 hover:scale-105"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-psl-yellow to-amber-500 text-black font-bold text-xs sm:text-sm hover:shadow-lg hover:shadow-psl-yellow/50 transition-all duration-300 hover:scale-105"
             >
-              👤 {userName || 'Set Name'}
+              👤 {userName || 'Profile'}
             </button>
             <button
               onClick={handleLogout}
-              className="px-4 py-2 rounded-full border border-gray-600 text-gray-300 hover:border-psl-red hover:text-psl-red transition-all duration-300 text-sm font-semibold"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-gray-600 text-gray-300 hover:border-psl-red hover:text-psl-red transition-all duration-300 text-xs sm:text-sm font-semibold"
             >
               Logout
             </button>
@@ -95,12 +95,12 @@ export default function Navbar() {
         </div>
         
         {/* Mobile Menu */}
-        <div className="md:hidden flex gap-2 mt-3 overflow-x-auto pb-2">
+        <div className="md:hidden flex gap-2 mt-2 overflow-x-auto pb-2 scrollbar-hide">
           {navLinks.map(link => (
             <Link
               key={link.href}
               href={link.href}
-              className={`px-4 py-2 rounded-full transition-all text-sm whitespace-nowrap font-semibold ${
+              className={`px-3 py-1.5 rounded-full transition-all text-xs whitespace-nowrap font-semibold ${
                 pathname === link.href
                   ? 'bg-gradient-to-r from-psl-red to-red-700 text-white shadow-lg'
                   : 'text-gray-300 hover:text-psl-yellow bg-white/5'

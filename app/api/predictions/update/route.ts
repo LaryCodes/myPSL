@@ -6,21 +6,38 @@ export async function PUT(request: NextRequest) {
   try {
     const { match_id, predicted_team } = await request.json()
 
-    // Get user from session token (SECURE)
-    const token = request.cookies.get('sb-access-token')?.value
+    // Try to get token from cookie first, then from Authorization header
+    let token = request.cookies.get('sb-access-token')?.value
+    
     if (!token) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      const authHeader = request.headers.get('authorization')
+      if (authHeader?.startsWith('Bearer ')) {
+        token = authHeader.substring(7)
+      }
     }
 
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized - No token found' }, { status: 401 })
+    }
+
+    // Create authenticated Supabase client
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      { global: { headers: { Authorization: `Bearer ${token}` } } }
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      }
     )
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    // Verify the token and get user
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+    
     if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: `Unauthorized - ${authError?.message || 'Invalid token'}` }, { status: 401 })
     }
 
     // Validate inputs
@@ -77,10 +94,14 @@ export async function PUT(request: NextRequest) {
       .select()
       .single()
 
-    if (error) throw error
+    if (error) {
+      console.error('Update error:', error)
+      throw error
+    }
 
     return NextResponse.json(data)
   } catch (error: any) {
+    console.error('API error:', error)
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }

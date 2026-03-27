@@ -41,8 +41,8 @@ export default function LeaderboardPage() {
     <div className="min-h-screen">
       <FloatingBackground />
       <Navbar />
-      <div className="relative z-10 max-w-7xl mx-auto p-8">
-        <h1 className="text-4xl font-bold text-psl-yellow mb-8">Leaderboard</h1>
+      <div className="relative z-10 max-w-7xl mx-auto p-3 sm:p-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-psl-yellow mb-4">Leaderboard</h1>
         <LeaderboardTable entries={entries} currentUserId={userId || undefined} />
       </div>
     </div>
