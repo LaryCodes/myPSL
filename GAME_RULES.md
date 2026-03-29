@@ -27,6 +27,9 @@ Predict PSL match winners and earn points.
 
 ### Streak Bonus
 - Get 3 correct in a row: **+1 bonus point**
+- Get 6 correct in a row: **+1 bonus point** (total +2 from streaks)
+- Get 9 correct in a row: **+1 bonus point** (total +3 from streaks)
+- Bonus awarded every 3 consecutive correct predictions
 - Wrong prediction: Streak resets to 0
 - No prediction: Streak resets to 0
 - Abandoned match: Streak unchanged
@@ -43,7 +46,10 @@ Predict PSL match winners and earn points.
 - Match 1: Correct → 2 points (streak = 1)
 - Match 2: Correct → 2 points (streak = 2)
 - Match 3: Correct → 2 + 1 bonus = 3 points (streak = 3)
-- **Total: 7 points**
+- Match 4: Correct → 2 points (streak = 4)
+- Match 5: Correct → 2 points (streak = 5)
+- Match 6: Correct → 2 + 1 bonus = 3 points (streak = 6)
+- **Total: 14 points**
 
 ### Broken Streak
 - Match 1: Correct → 2 points (streak = 1)

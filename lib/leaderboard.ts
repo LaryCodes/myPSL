@@ -82,8 +82,8 @@ export async function calculateLeaderboard(): Promise<LeaderboardEntry[]> {
           totalPoints += 2
           currentStreak++
           
-          // Streak bonus: ONLY at exactly 3 consecutive
-          if (currentStreak === 3) {
+          // Streak bonus: Every 3 consecutive correct predictions
+          if (currentStreak > 0 && currentStreak % 3 === 0) {
             totalPoints += 1
           }
           
