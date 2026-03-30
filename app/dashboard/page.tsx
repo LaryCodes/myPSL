@@ -133,66 +133,70 @@ export default function DashboardPage() {
     <div className="min-h-screen">
       <FloatingBackground />
       <Navbar />
-      <div className="relative z-10 max-w-7xl mx-auto p-8">
-        {/* Hero Section */}
-        <div className="text-center mb-6">
-          <h1 className="text-3xl sm:text-5xl font-bold mb-2" style={{
-            background: 'linear-gradient(135deg, #fbbf24, #dc2626)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          }}>
+      <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-8">
+        {/* Hero Section with 3D Effect */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl sm:text-6xl font-black mb-3 gradient-text drop-shadow-2xl">
             Dashboard
           </h1>
-          <p className="text-gray-400 text-sm">Next 24 Hours</p>
+          <p className="text-gray-400 text-sm sm:text-base">Predict. Compete. Conquer.</p>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
+        {/* Stats Grid with 3D Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
           <StatsCard label="Points" value={stats.points} icon="🏆" />
           <StatsCard label="Predictions" value={stats.totalPredictions} icon="🎯" />
           <StatsCard label="Streak" value={stats.currentStreak} icon="🔥" />
           <StatsCard label="Upcoming" value={matches.length} icon="⚡" />
         </div>
 
-        {/* Upcoming Matches */}
-        <h2 className="text-xl font-bold text-psl-yellow mb-4">⚡ Predict Now</h2>
-        
-        {matches.length === 0 ? (
-          <div className="glass rounded-lg p-8 text-center">
-            <p className="text-gray-300 text-lg mb-2">✅ All caught up!</p>
-            <p className="text-gray-500 text-sm mb-4">No matches in the next 24 hours</p>
-            <a href="/matches" className="inline-block text-psl-yellow hover:text-psl-red transition text-sm">
-              View full schedule →
-            </a>
-          </div>
-        ) : (
-          <>
-            <div className="space-y-4 mb-6">
-              {matches.map(match => {
-                const pred = predictions.find(p => p.match_id === match.match_id)
-                return (
-                  <MatchCard
-                    key={match.match_id}
-                    match={match}
-                    userPrediction={pred?.predicted_team}
-                    editCount={pred?.edit_count || 0}
-                    onPredict={(team) => handlePredict(match.match_id, team)}
-                  />
-                )
-              })}
-            </div>
-            
-            <div className="text-center">
+        {/* Upcoming Matches Section */}
+        <div className="glass rounded-2xl p-4 sm:p-6 depth-shadow mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-psl-yellow mb-4 flex items-center gap-2">
+            <span className="neon-text">⚡ Predict Now</span>
+            <span className="text-sm text-gray-500 font-normal">(Next 24h)</span>
+          </h2>
+          
+          {matches.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4">✅</div>
+              <p className="text-gray-300 text-lg sm:text-xl font-semibold mb-2">All caught up!</p>
+              <p className="text-gray-500 text-sm mb-6">No matches in the next 24 hours</p>
               <a 
                 href="/matches" 
-                className="inline-block px-6 py-3 glass rounded-lg text-psl-yellow hover:glow-yellow transition font-semibold text-sm"
+                className="inline-block px-6 py-3 bg-gradient-to-r from-psl-red to-red-700 text-white rounded-full font-bold hover:shadow-lg hover:shadow-psl-red/50 transition-all duration-300 hover:scale-105"
               >
-                View All Matches →
+                View Full Schedule →
               </a>
             </div>
-          </>
-        )}
+          ) : (
+            <>
+              <div className="space-y-4 mb-6">
+                {matches.map(match => {
+                  const pred = predictions.find(p => p.match_id === match.match_id)
+                  return (
+                    <MatchCard
+                      key={match.match_id}
+                      match={match}
+                      userPrediction={pred?.predicted_team}
+                      editCount={pred?.edit_count || 0}
+                      onPredict={(team) => handlePredict(match.match_id, team)}
+                    />
+                  )
+                })}
+              </div>
+              
+              <div className="text-center">
+                <a 
+                  href="/matches" 
+                  className="inline-block px-6 py-3 glass rounded-xl text-psl-yellow hover:glow-yellow transition-all duration-300 font-bold text-sm sm:text-base hover:scale-105"
+                >
+                  View All Matches →
+                </a>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   )

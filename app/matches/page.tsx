@@ -100,8 +100,14 @@ export default function MatchesPage() {
     <div className="min-h-screen">
       <FloatingBackground />
       <Navbar />
-      <div className="relative z-10 max-w-7xl mx-auto p-3 sm:p-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-psl-yellow mb-4">All Matches</h1>
+      <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-8">
+        {/* Hero Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl sm:text-6xl font-black mb-3 gradient-text drop-shadow-2xl">
+            All Matches
+          </h1>
+          <p className="text-gray-400 text-sm sm:text-base">Complete PSL 2026 Schedule</p>
+        </div>
         
         <div className="space-y-4">
           {matches.map(match => {

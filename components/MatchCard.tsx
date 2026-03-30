@@ -50,12 +50,12 @@ export default function MatchCard({ match, userPrediction, editCount = 0, onPred
   const canEdit = match.prediction_open && editCount < 2
 
   return (
-    <div className="glass rounded-xl p-3 sm:p-6 hover:glow-yellow transition-all duration-300">
-      <div className="flex flex-col gap-3 mb-3">
+    <div className="glass card-3d rounded-2xl p-4 sm:p-6 depth-shadow">
+      <div className="flex flex-col gap-3 mb-4">
         {/* Match Header */}
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-xs text-psl-yellow uppercase tracking-wide font-bold mb-1">
+            <p className="text-xs sm:text-sm text-psl-yellow uppercase tracking-wide font-bold mb-1 neon-text">
               {match.match_id.replace('psl2026_', 'Match ')}
             </p>
             <p className="text-xs text-gray-400">
@@ -72,12 +72,12 @@ export default function MatchCard({ match, userPrediction, editCount = 0, onPred
           
           {/* Timer Badge */}
           {match.prediction_open && (
-            <div className="bg-green-900/70 text-green-300 border border-green-500 animate-pulse text-xs font-bold px-2 py-1 rounded-md">
+            <div className="bg-gradient-to-r from-green-900/80 to-emerald-900/80 text-green-300 border border-green-500/60 animate-pulse text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg shadow-green-500/30">
               ⏰ {timeLeft}
             </div>
           )}
           {match.prediction_closed && (
-            <div className="bg-red-900/70 text-red-300 border border-red-500 text-xs font-bold px-2 py-1 rounded-md">
+            <div className="bg-gradient-to-r from-red-900/80 to-rose-900/80 text-red-300 border border-red-500/60 text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg shadow-red-500/30">
               🔒 CLOSED
             </div>
           )}
@@ -85,8 +85,8 @@ export default function MatchCard({ match, userPrediction, editCount = 0, onPred
 
         {/* Result if available */}
         {match.result && (
-          <div className="bg-psl-yellow/10 border border-psl-yellow/30 rounded-lg p-2">
-            <p className="text-xs text-psl-yellow font-semibold text-center">
+          <div className="bg-gradient-to-r from-psl-yellow/20 to-amber-600/20 border border-psl-yellow/40 rounded-xl p-3 backdrop-blur-sm">
+            <p className="text-xs sm:text-sm text-psl-yellow font-bold text-center neon-text">
               ✅ Winner: {match.result}
             </p>
           </div>
@@ -94,31 +94,31 @@ export default function MatchCard({ match, userPrediction, editCount = 0, onPred
       </div>
 
       {/* Teams */}
-      <div className="space-y-2 mb-3">
+      <div className="space-y-3 mb-4">
         <button
           onClick={() => handlePredict(match.team1)}
           disabled={!canEdit || loading}
-          className={`w-full py-3 px-4 rounded-lg font-bold text-sm transition-all ${
+          className={`w-full py-3 sm:py-4 px-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 transform ${
             userPrediction === match.team1 
-              ? 'bg-gradient-to-r from-psl-yellow to-amber-500 text-black shadow-lg shadow-psl-yellow/50 scale-[1.02]' 
-              : 'bg-white/5 text-white hover:bg-white/10 border border-gray-700'
-          } ${!canEdit ? 'opacity-50 cursor-not-allowed' : ''}`}
+              ? 'bg-gradient-to-r from-psl-yellow via-amber-500 to-psl-yellow text-black shadow-2xl shadow-psl-yellow/60 scale-[1.03] border-2 border-amber-300' 
+              : 'bg-gradient-to-br from-white/10 to-white/5 text-white hover:from-white/15 hover:to-white/10 border border-gray-700/50 hover:border-gray-600 hover:scale-[1.01]'
+          } ${!canEdit ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg'}`}
         >
           {match.team1}
         </button>
         
         <div className="text-center">
-          <span className="text-psl-yellow font-bold text-lg">VS</span>
+          <span className="text-psl-yellow font-black text-xl sm:text-2xl neon-text">VS</span>
         </div>
         
         <button
           onClick={() => handlePredict(match.team2)}
           disabled={!canEdit || loading}
-          className={`w-full py-3 px-4 rounded-lg font-bold text-sm transition-all ${
+          className={`w-full py-3 sm:py-4 px-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 transform ${
             userPrediction === match.team2 
-              ? 'bg-gradient-to-r from-psl-yellow to-amber-500 text-black shadow-lg shadow-psl-yellow/50 scale-[1.02]' 
-              : 'bg-white/5 text-white hover:bg-white/10 border border-gray-700'
-          } ${!canEdit ? 'opacity-50 cursor-not-allowed' : ''}`}
+              ? 'bg-gradient-to-r from-psl-yellow via-amber-500 to-psl-yellow text-black shadow-2xl shadow-psl-yellow/60 scale-[1.03] border-2 border-amber-300' 
+              : 'bg-gradient-to-br from-white/10 to-white/5 text-white hover:from-white/15 hover:to-white/10 border border-gray-700/50 hover:border-gray-600 hover:scale-[1.01]'
+          } ${!canEdit ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg'}`}
         >
           {match.team2}
         </button>
@@ -126,14 +126,14 @@ export default function MatchCard({ match, userPrediction, editCount = 0, onPred
 
       {/* Status Footer */}
       {userPrediction && (
-        <div className="flex justify-between items-center text-xs bg-black/30 rounded-lg p-2">
+        <div className="flex justify-between items-center text-xs bg-gradient-to-r from-black/40 to-black/30 rounded-lg p-3 border border-gray-800/50">
           <span className="text-gray-400">Your pick: <span className="text-psl-yellow font-bold">{userPrediction}</span></span>
-          <span className="text-gray-500">Edits: {editCount}/2</span>
+          <span className="text-gray-500 font-semibold">Edits: {editCount}/2</span>
         </div>
       )}
 
       {match.prediction_closed && !userPrediction && !match.result && (
-        <div className="text-center text-xs text-red-400 bg-red-900/20 py-2 rounded-lg border border-red-900/50">
+        <div className="text-center text-xs text-red-400 bg-gradient-to-r from-red-900/30 to-rose-900/30 py-2 rounded-lg border border-red-900/60">
           ⚠️ Missed prediction
         </div>
       )}
