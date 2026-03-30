@@ -8,6 +8,7 @@ import Navbar from '@/components/Navbar'
 import FloatingBackground from '@/components/FloatingBackground'
 import StatsCard from '@/components/StatsCard'
 import BottomNav from '@/components/BottomNav'
+import InstallPrompt from '@/components/InstallPrompt'
 
 type UserPrediction = {
   match_id: string
@@ -224,6 +225,7 @@ export default function DashboardPage() {
       </div>
       
       <BottomNav />
+      <InstallPrompt />
     </div>
   )
 }

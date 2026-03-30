@@ -13,9 +13,14 @@ export default function Navbar() {
   const [showProfile, setShowProfile] = useState(false)
   const [userId, setUserId] = useState<string | null>(null)
   const [userName, setUserName] = useState<string>('')
+  const [showInstallBtn, setShowInstallBtn] = useState(false)
 
   useEffect(() => {
     loadUser()
+    
+    // Check if app is installable
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    setShowInstallBtn(!isStandalone)
   }, [])
 
   const loadUser = async () => {
@@ -38,6 +43,15 @@ export default function Navbar() {
     await supabase.auth.signOut()
     document.cookie = 'sb-access-token=; Max-Age=0; path=/'
     router.push('/login')
+  }
+
+  const handleInstallClick = () => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    if (isIOS) {
+      alert('To install on iOS:\n\n1. Tap the Share button (□↑) at the bottom\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add" to confirm\n\nYou\'ll get a home screen icon and full-screen experience!')
+    } else {
+      alert('To install:\n\n1. Look for the install icon (⊕) in your browser address bar\n2. Or open browser menu (⋮) → "Install app"\n3. Or use the install prompt on the dashboard\n\nYou\'ll get quick access and offline support!')
+    }
   }
 
   const navLinks = [
@@ -84,6 +98,15 @@ export default function Navbar() {
           </div>
           
           <div className="flex items-center gap-2">
+            {showInstallBtn && (
+              <button
+                onClick={handleInstallClick}
+                className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-full border border-psl-yellow/50 text-psl-yellow hover:bg-psl-yellow/10 transition-all duration-300 text-xs font-semibold"
+                title="Install App"
+              >
+                📱 Install
+              </button>
+            )}
             <button
               onClick={() => setShowProfile(true)}
               className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-psl-yellow to-amber-500 text-black font-bold text-xs sm:text-sm hover:shadow-lg hover:shadow-psl-yellow/50 transition-all duration-300 hover:scale-105"

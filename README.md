@@ -10,6 +10,10 @@ A prediction app for Pakistan Super League matches. Predict winners, earn points
 - ⏱️ Live countdown timer on each match
 - 🎨 Modern dark UI with glassmorphism
 - 🔒 Secure authentication
+- 📱 PWA support - Install as mobile/desktop app
+- 👑 Ultimate Call - Predict finals & champion for bonus points
+- 📊 Live community prediction stats
+- 🔥 Streak tracking with bonus multipliers
 
 ## Tech Stack
 
@@ -21,6 +25,27 @@ A prediction app for Pakistan Super League matches. Predict winners, earn points
 ## Quick Setup
 
 See `QUICKSTART.md` for setup instructions.
+
+## PWA Installation
+
+The app can be installed as a Progressive Web App:
+
+### Android
+1. Open the website in Chrome
+2. Tap the install prompt or menu → "Add to Home Screen"
+3. App icon appears on home screen
+
+### iOS (16.4+)
+1. Open in Safari
+2. Tap Share button → "Add to Home Screen"
+3. Confirm installation
+
+### Desktop
+1. Open in Chrome/Edge
+2. Click install icon in address bar
+3. Or click the install prompt
+
+Benefits: Offline support, push notifications, native app experience, quick access from home screen.
 
 ## Game Rules
 
