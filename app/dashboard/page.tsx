@@ -19,12 +19,13 @@ type UserStats = {
   correctPredictions: number
   currentStreak: number
   points: number
+  accuracy: number
 }
 
 export default function DashboardPage() {
   const [matches, setMatches] = useState<MatchWithStatus[]>([])
   const [predictions, setPredictions] = useState<UserPrediction[]>([])
-  const [stats, setStats] = useState<UserStats>({ totalPredictions: 0, correctPredictions: 0, currentStreak: 0, points: 0 })
+  const [stats, setStats] = useState<UserStats>({ totalPredictions: 0, correctPredictions: 0, currentStreak: 0, points: 0, accuracy: 0 })
   const [userId, setUserId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -65,6 +66,27 @@ export default function DashboardPage() {
     if (userPredictions) {
       setPredictions(userPredictions)
       
+      // Calculate accuracy from completed matches
+      const allMatches = getAllMatchesWithStatus()
+      const completedMatches = allMatches.filter(m => m.result && m.result !== 'no_result')
+      
+      let correctCount = 0
+      completedMatches.forEach(match => {
+        const prediction = userPredictions.find((p: UserPrediction) => p.match_id === match.match_id)
+        if (prediction && prediction.predicted_team === match.result) {
+          correctCount++
+        }
+      })
+      
+      const predictedCompletedMatches = userPredictions.filter((p: UserPrediction) => {
+        const match = completedMatches.find(m => m.match_id === p.match_id)
+        return match !== undefined
+      }).length
+      
+      const accuracy = predictedCompletedMatches > 0 
+        ? Math.round((correctCount / predictedCompletedMatches) * 100) 
+        : 0
+      
       // Calculate quick stats
       const leaderboardRes = await fetch('/api/leaderboard')
       const leaderboard = await leaderboardRes.json()
@@ -73,9 +95,10 @@ export default function DashboardPage() {
       if (userEntry) {
         setStats({
           totalPredictions: userPredictions.length,
-          correctPredictions: 0,
+          correctPredictions: correctCount,
           currentStreak: userEntry.current_streak,
-          points: userEntry.total_points
+          points: userEntry.total_points,
+          accuracy: accuracy
         })
       }
     }
@@ -145,7 +168,7 @@ export default function DashboardPage() {
         {/* Stats Grid with 3D Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
           <StatsCard label="Points" value={stats.points} icon="🏆" />
-          <StatsCard label="Predictions" value={stats.totalPredictions} icon="🎯" />
+          <StatsCard label="Accuracy" value={stats.accuracy} icon="🎯" isAccuracy={true} />
           <StatsCard label="Streak" value={stats.currentStreak} icon="🔥" />
           <StatsCard label="Upcoming" value={matches.length} icon="⚡" />
         </div>

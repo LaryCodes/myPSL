@@ -10,9 +10,31 @@ type MatchCardProps = {
   onPredict: (team: string) => Promise<void>
 }
 
+type MatchStats = {
+  total: number
+  teamCounts: { [key: string]: number }
+}
+
 export default function MatchCard({ match, userPrediction, editCount = 0, onPredict }: MatchCardProps) {
   const [timeLeft, setTimeLeft] = useState('')
   const [loading, setLoading] = useState(false)
+  const [stats, setStats] = useState<MatchStats | null>(null)
+
+  useEffect(() => {
+    loadStats()
+  }, [match.match_id])
+
+  const loadStats = async () => {
+    try {
+      const response = await fetch(`/api/match-stats?match_id=${match.match_id}`)
+      if (response.ok) {
+        const data = await response.json()
+        setStats(data)
+      }
+    } catch (error) {
+      console.error('Failed to load match stats:', error)
+    }
+  }
 
   useEffect(() => {
     const updateTimer = () => {
@@ -42,12 +64,27 @@ export default function MatchCard({ match, userPrediction, editCount = 0, onPred
     setLoading(true)
     try {
       await onPredict(team)
+      await loadStats() // Reload stats after prediction
     } finally {
       setLoading(false)
     }
   }
 
   const canEdit = match.prediction_open && editCount < 2
+
+  // Calculate percentages and popular pick
+  const getTeamStats = (team: string) => {
+    if (!stats || stats.total === 0) return { count: 0, percentage: 0, isPopular: false }
+    
+    const count = stats.teamCounts[team] || 0
+    const percentage = Math.round((count / stats.total) * 100)
+    const isPopular = percentage > 60
+    
+    return { count, percentage, isPopular }
+  }
+
+  const team1Stats = getTeamStats(match.team1)
+  const team2Stats = getTeamStats(match.team2)
 
   return (
     <div className="glass card-3d rounded-2xl p-4 sm:p-6 depth-shadow">
@@ -98,29 +135,56 @@ export default function MatchCard({ match, userPrediction, editCount = 0, onPred
         <button
           onClick={() => handlePredict(match.team1)}
           disabled={!canEdit || loading}
-          className={`w-full py-3 sm:py-4 px-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 transform ${
+          className={`w-full py-3 sm:py-4 px-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 transform relative ${
             userPrediction === match.team1 
               ? 'bg-gradient-to-r from-psl-yellow via-amber-500 to-psl-yellow text-black shadow-2xl shadow-psl-yellow/60 scale-[1.03] border-2 border-amber-300' 
               : 'bg-gradient-to-br from-white/10 to-white/5 text-white hover:from-white/15 hover:to-white/10 border border-gray-700/50 hover:border-gray-600 hover:scale-[1.01]'
           } ${!canEdit ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg'}`}
         >
-          {match.team1}
+          <div className="flex items-center justify-between">
+            <span>{match.team1}</span>
+            {stats && stats.total > 0 && (
+              <div className="flex items-center gap-2">
+                {team1Stats.isPopular && (
+                  <span className="text-xs bg-orange-500 text-black font-bold px-2 py-0.5 rounded-full shadow-lg">
+                    🔥 Popular
+                  </span>
+                )}
+                <span className="text-xs opacity-70">👥 {team1Stats.percentage}%</span>
+              </div>
+            )}
+          </div>
         </button>
         
         <div className="text-center">
           <span className="text-psl-yellow font-black text-xl sm:text-2xl neon-text">VS</span>
+          {stats && stats.total > 0 && (
+            <p className="text-xs text-gray-500 mt-1">{stats.total} prediction{stats.total !== 1 ? 's' : ''}</p>
+          )}
         </div>
         
         <button
           onClick={() => handlePredict(match.team2)}
           disabled={!canEdit || loading}
-          className={`w-full py-3 sm:py-4 px-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 transform ${
+          className={`w-full py-3 sm:py-4 px-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 transform relative ${
             userPrediction === match.team2 
               ? 'bg-gradient-to-r from-psl-yellow via-amber-500 to-psl-yellow text-black shadow-2xl shadow-psl-yellow/60 scale-[1.03] border-2 border-amber-300' 
               : 'bg-gradient-to-br from-white/10 to-white/5 text-white hover:from-white/15 hover:to-white/10 border border-gray-700/50 hover:border-gray-600 hover:scale-[1.01]'
           } ${!canEdit ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg'}`}
         >
-          {match.team2}
+          <div className="flex items-center justify-between">
+            <span>{match.team2}</span>
+            {stats && stats.total > 0 && (
+              <div className="flex items-center gap-2">
+                {team2Stats.isPopular && (
+                  <span className="text-xs bg-orange-500 text-black font-bold px-2 py-0.5 rounded-full shadow-lg">
+                    🔥 Popular
+                  </span>
+                )}
+                <span className="text-xs opacity-70">👥 {team2Stats.percentage}%</span>
+              </div>
+            )}
+          </div>
         </button>
       </div>
 
