@@ -7,6 +7,7 @@ import MatchCard from '@/components/MatchCard'
 import Navbar from '@/components/Navbar'
 import FloatingBackground from '@/components/FloatingBackground'
 import StatsCard from '@/components/StatsCard'
+import BottomNav from '@/components/BottomNav'
 
 type UserPrediction = {
   match_id: string
@@ -153,7 +154,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-20 md:pb-0">
       <FloatingBackground />
       <Navbar />
       <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-8">
@@ -221,6 +222,8 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
+      
+      <BottomNav />
     </div>
   )
 }

@@ -43,13 +43,14 @@ export default function Navbar() {
   const navLinks = [
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/matches', label: 'Matches' },
+    { href: '/ultimate-call', label: 'Ultimate Call', special: true },
     { href: '/leaderboard', label: 'Leaderboard' },
   ]
 
   return (
-    <nav className="sticky top-0 z-50 glass border-b border-red-900/30 backdrop-blur-xl">
+    <nav className="sticky top-0 z-50 glass border-b border-red-900/30 backdrop-blur-2xl bg-black/40">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 sm:py-3">
-        <div className="flex flex-wrap justify-between items-center gap-2 sm:gap-4">
+        <div className="flex justify-between items-center gap-2 sm:gap-4">
           <div className="flex items-center gap-2 sm:gap-4 md:gap-8">
             <h1 className="text-base sm:text-xl md:text-2xl font-black tracking-tight" style={{
               background: 'linear-gradient(135deg, #fbbf24 0%, #dc2626 50%, #fbbf24 100%)',
@@ -68,11 +69,15 @@ export default function Navbar() {
                   href={link.href}
                   className={`px-4 py-2 rounded-full transition-all duration-300 font-semibold text-sm ${
                     pathname === link.href
-                      ? 'bg-gradient-to-r from-psl-red to-red-700 text-white shadow-lg shadow-psl-red/50 scale-105'
-                      : 'text-gray-300 hover:text-psl-yellow hover:bg-white/5'
+                      ? link.special
+                        ? 'bg-gradient-to-r from-amber-500 to-psl-yellow text-black shadow-lg shadow-amber-500/50 scale-105'
+                        : 'bg-gradient-to-r from-psl-red to-red-700 text-white shadow-lg shadow-psl-red/50 scale-105'
+                      : link.special
+                        ? 'text-amber-400 hover:text-amber-300 hover:bg-amber-500/10'
+                        : 'text-gray-300 hover:text-psl-yellow hover:bg-white/5'
                   }`}
                 >
-                  {link.label}
+                  {link.special && '👑 '}{link.label}
                 </Link>
               ))}
             </div>
@@ -92,23 +97,6 @@ export default function Navbar() {
               Logout
             </button>
           </div>
-        </div>
-        
-        {/* Mobile Menu */}
-        <div className="md:hidden flex gap-2 mt-2 overflow-x-auto pb-2 scrollbar-hide">
-          {navLinks.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`px-3 py-1.5 rounded-full transition-all text-xs whitespace-nowrap font-semibold ${
-                pathname === link.href
-                  ? 'bg-gradient-to-r from-psl-red to-red-700 text-white shadow-lg'
-                  : 'text-gray-300 hover:text-psl-yellow bg-white/5'
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
         </div>
       </div>
       

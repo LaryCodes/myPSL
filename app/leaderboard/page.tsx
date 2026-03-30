@@ -6,6 +6,7 @@ import LeaderboardTable from '@/components/LeaderboardTable'
 import Navbar from '@/components/Navbar'
 import FloatingBackground from '@/components/FloatingBackground'
 import { LeaderboardEntry } from '@/lib/leaderboard'
+import BottomNav from '@/components/BottomNav'
 
 export default function LeaderboardPage() {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([])
@@ -101,7 +102,7 @@ export default function LeaderboardPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-20 md:pb-0">
       <FloatingBackground />
       <Navbar />
       <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-8">
@@ -115,6 +116,8 @@ export default function LeaderboardPage() {
         
         <LeaderboardTable entries={entries} currentUserId={userId || undefined} />
       </div>
+      
+      <BottomNav />
     </div>
   )
 }

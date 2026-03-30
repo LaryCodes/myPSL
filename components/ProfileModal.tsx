@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { supabase } from '@/lib/supabase'
 
 type ProfileModalProps = {
@@ -17,6 +18,12 @@ export default function ProfileModal({ isOpen, onClose, userId }: ProfileModalPr
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState('')
   const [error, setError] = useState('')
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    return () => setMounted(false)
+  }, [])
 
   useEffect(() => {
     if (isOpen) {
@@ -100,37 +107,24 @@ export default function ProfileModal({ isOpen, onClose, userId }: ProfileModalPr
     }
   }
 
-  if (!isOpen) return null
+  if (!isOpen || !mounted) return null
 
-  return (
+  const modalContent = (
     <div 
-      className="fixed inset-0 flex items-center justify-center p-4" 
-      style={{ 
-        zIndex: 99999, 
-        backgroundColor: 'rgba(0, 0, 0, 0.9)',
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0
-      }}
+      className="fixed inset-0 z-[9999] overflow-y-auto bg-black/90"
       onClick={onClose}
     >
-      <div 
-        className="bg-gray-900 border-2 border-psl-red rounded-lg p-6 w-full max-w-md" 
-        style={{ 
-          maxHeight: '80vh',
-          overflowY: 'auto',
-          margin: 'auto'
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div 
+          className="bg-gray-900 border-2 border-psl-red rounded-lg p-4 sm:p-6 w-full max-w-md my-8" 
+          onClick={(e) => e.stopPropagation()}
+        >
         {/* Header */}
-        <div className="flex justify-between items-start mb-6">
-          <h2 className="text-2xl font-bold text-psl-yellow">Profile Settings</h2>
+        <div className="flex justify-between items-start mb-4 sm:mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-psl-yellow">Profile Settings</h2>
           <button 
             onClick={onClose} 
-            className="text-gray-400 hover:text-white text-4xl leading-none -mt-2"
+            className="text-gray-400 hover:text-white text-3xl sm:text-4xl leading-none -mt-2"
           >
             ×
           </button>
@@ -138,46 +132,46 @@ export default function ProfileModal({ isOpen, onClose, userId }: ProfileModalPr
         
         {/* Messages */}
         {success && (
-          <div className="mb-4 p-3 bg-green-900/50 border border-green-500 rounded text-green-400 text-sm">
+          <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-green-900/50 border border-green-500 rounded text-green-400 text-xs sm:text-sm">
             ✅ {success}
           </div>
         )}
         
         {error && (
-          <div className="mb-4 p-3 bg-red-900/50 border border-red-500 rounded text-red-400 text-sm">
+          <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-red-900/50 border border-red-500 rounded text-red-400 text-xs sm:text-sm">
             ❌ {error}
           </div>
         )}
         
         {/* Name Section */}
-        <div className="mb-6 pb-6 border-b border-gray-700">
-          <h3 className="text-base font-semibold text-white mb-3">Display Name</h3>
+        <div className="mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-gray-700">
+          <h3 className="text-sm sm:text-base font-semibold text-white mb-2 sm:mb-3">Display Name</h3>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-2 mb-3 bg-black border border-gray-600 rounded focus:border-psl-yellow focus:outline-none text-white"
+            className="w-full px-3 sm:px-4 py-2 mb-2 sm:mb-3 bg-black border border-gray-600 rounded focus:border-psl-yellow focus:outline-none text-white text-sm sm:text-base"
             placeholder="Enter your name"
           />
           <button
             onClick={handleSaveName}
             disabled={loading || !name.trim()}
-            className="btn-primary w-full"
+            className="btn-primary w-full text-sm sm:text-base py-2"
           >
             {loading ? 'Saving...' : 'Update Name'}
           </button>
         </div>
 
         {/* Password Section */}
-        <div className="mb-6">
-          <h3 className="text-base font-semibold text-white mb-3">Change Password</h3>
+        <div className="mb-4 sm:mb-6">
+          <h3 className="text-sm sm:text-base font-semibold text-white mb-2 sm:mb-3">Change Password</h3>
           
-          <div className="space-y-3 mb-3">
+          <div className="space-y-2 sm:space-y-3 mb-2 sm:mb-3">
             <input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full px-4 py-2 bg-black border border-gray-600 rounded focus:border-psl-yellow focus:outline-none text-white"
+              className="w-full px-3 sm:px-4 py-2 bg-black border border-gray-600 rounded focus:border-psl-yellow focus:outline-none text-white text-sm sm:text-base"
               placeholder="New password (min 6 chars)"
             />
             
@@ -185,7 +179,7 @@ export default function ProfileModal({ isOpen, onClose, userId }: ProfileModalPr
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-4 py-2 bg-black border border-gray-600 rounded focus:border-psl-yellow focus:outline-none text-white"
+              className="w-full px-3 sm:px-4 py-2 bg-black border border-gray-600 rounded focus:border-psl-yellow focus:outline-none text-white text-sm sm:text-base"
               placeholder="Confirm password"
             />
           </div>
@@ -193,7 +187,7 @@ export default function ProfileModal({ isOpen, onClose, userId }: ProfileModalPr
           <button
             onClick={handleChangePassword}
             disabled={loading || !newPassword || !confirmPassword}
-            className="btn-primary w-full"
+            className="btn-primary w-full text-sm sm:text-base py-2"
           >
             {loading ? 'Changing...' : 'Change Password'}
           </button>
@@ -201,11 +195,14 @@ export default function ProfileModal({ isOpen, onClose, userId }: ProfileModalPr
 
         <button
           onClick={onClose}
-          className="w-full px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded transition text-white"
+          className="w-full px-3 sm:px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded transition text-white text-sm sm:text-base"
         >
           Close
         </button>
       </div>
+      </div>
     </div>
   )
+
+  return createPortal(modalContent, document.body)
 }

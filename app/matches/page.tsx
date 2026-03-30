@@ -6,6 +6,7 @@ import { getAllMatchesWithStatus, MatchWithStatus } from '@/lib/matches'
 import MatchCard from '@/components/MatchCard'
 import Navbar from '@/components/Navbar'
 import FloatingBackground from '@/components/FloatingBackground'
+import BottomNav from '@/components/BottomNav'
 
 type UserPrediction = {
   match_id: string
@@ -97,7 +98,7 @@ export default function MatchesPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-20 md:pb-0">
       <FloatingBackground />
       <Navbar />
       <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-8">
@@ -124,6 +125,8 @@ export default function MatchesPage() {
           })}
         </div>
       </div>
+      
+      <BottomNav />
     </div>
   )
 }
