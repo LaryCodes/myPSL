@@ -107,11 +107,11 @@ export async function calculateLeaderboard(): Promise<LeaderboardEntry[]> {
     // Sort by points descending
     leaderboard.sort((a, b) => b.total_points - a.total_points)
 
-    // Assign ranks (same points = same rank)
+    // Assign ranks using dense ranking (1, 1, 2, 2, 3...)
     let currentRank = 1
     for (let i = 0; i < leaderboard.length; i++) {
       if (i > 0 && leaderboard[i].total_points < leaderboard[i - 1].total_points) {
-        currentRank = i + 1
+        currentRank++
       }
       leaderboard[i].rank = currentRank
     }

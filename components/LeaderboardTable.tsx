@@ -31,6 +31,9 @@ export default function LeaderboardTable({ entries, currentUserId }: Leaderboard
             const isCurrentUser = entry.user_id === currentUserId
             const trophy = getTrophyIcon(entry.rank)
             
+            // Show rank only if it's different from previous entry
+            const showRank = idx === 0 || entries[idx - 1].rank !== entry.rank
+            
             return (
               <tr
                 key={entry.user_id}
@@ -42,7 +45,11 @@ export default function LeaderboardTable({ entries, currentUserId }: Leaderboard
               >
                 <td className="px-3 sm:px-6 py-4">
                   <div className="flex items-center gap-2">
-                    {trophy || <span className="font-bold text-psl-yellow text-sm sm:text-base">{entry.rank}</span>}
+                    {showRank ? (
+                      trophy || <span className="font-bold text-psl-yellow text-sm sm:text-base">{entry.rank}</span>
+                    ) : (
+                      <span className="text-psl-yellow/60 text-sm sm:text-base font-bold">=</span>
+                    )}
                   </div>
                 </td>
                 <td className="px-3 sm:px-6 py-4">
