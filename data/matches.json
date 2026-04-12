@@ -19,7 +19,7 @@
   {"match_id":"psl2026_18","team1":"Quetta Gladiators","team2":"Rawalpindi","match_datetime":"2026-04-10T14:00:00Z","result":"Quetta Gladiators"},
   {"match_id":"psl2026_19","team1":"Peshawar Zalmi","team2":"Lahore Qalandars","match_datetime":"2026-04-11T09:30:00Z","result":"Peshawar Zalmi"},
   {"match_id":"psl2026_20","team1":"Karachi Kings","team2":"Hyderabad Kingsmen","match_datetime":"2026-04-11T14:00:00Z","result":"Hyderabad Kingsmen"},
-  {"match_id":"psl2026_21","team1":"Hyderabad Kingsmen","team2":"Islamabad United","match_datetime":"2026-04-12T14:00:00Z","result":null},
+  {"match_id":"psl2026_21","team1":"Hyderabad Kingsmen","team2":"Islamabad United","match_datetime":"2026-04-12T14:00:00Z","result":"Hyderabad Kingsmen"},
   {"match_id":"psl2026_22","team1":"Peshawar Zalmi","team2":"Multan Sultans","match_datetime":"2026-04-13T14:00:00Z","result":null},
   {"match_id":"psl2026_23","team1":"Peshawar Zalmi","team2":"Quetta Gladiators","match_datetime":"2026-04-15T14:00:00Z","result":null},
   {"match_id":"psl2026_24","team1":"Hyderabad Kingsmen","team2":"Rawalpindi","match_datetime":"2026-04-16T09:30:00Z","result":null},
