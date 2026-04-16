@@ -15,47 +15,34 @@ export async function GET(request: NextRequest) {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     )
 
-    // Get all predictions for this match
+    // Get all final predictions for this match
     const { data: predictions, error } = await supabase
       .from('predictions')
-      .select('predicted_team')
+      .select('predicted_team, is_final')
       .eq('match_id', matchId)
-      .eq('is_final', true)
 
     if (error) throw error
 
-    if (!predictions || predictions.length === 0) {
+    // Filter for final predictions in JavaScript instead of SQL
+    const finalPredictions = predictions?.filter(p => p.is_final === true || p.is_final === 'true' || p.is_final === 1) || []
+
+    if (finalPredictions.length === 0) {
       return NextResponse.json({
         total: 0,
-        team1Count: 0,
-        team2Count: 0,
-        team1Percentage: 0,
-        team2Percentage: 0
+        teamCounts: {}
       })
     }
 
     // Count predictions per team
     const teamCounts: { [key: string]: number } = {}
-    predictions.forEach((p: any) => {
+    finalPredictions.forEach((p: any) => {
       teamCounts[p.predicted_team] = (teamCounts[p.predicted_team] || 0) + 1
     })
 
-    const teams = Object.keys(teamCounts)
-    const team1 = teams[0] || ''
-    const team2 = teams[1] || ''
-    const team1Count = teamCounts[team1] || 0
-    const team2Count = teamCounts[team2] || 0
-    const total = predictions.length
-
-    const team1Percentage = total > 0 ? Math.round((team1Count / total) * 100) : 0
-    const team2Percentage = total > 0 ? Math.round((team2Count / total) * 100) : 0
+    const total = finalPredictions.length
 
     return NextResponse.json({
       total,
-      team1Count,
-      team2Count,
-      team1Percentage,
-      team2Percentage,
       teamCounts
     })
   } catch (error: any) {

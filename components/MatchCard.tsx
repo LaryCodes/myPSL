@@ -22,6 +22,9 @@ export default function MatchCard({ match, userPrediction, editCount = 0, onPred
 
   useEffect(() => {
     loadStats()
+    // Auto-refresh stats every 30 seconds for real-time updates
+    const interval = setInterval(loadStats, 30000)
+    return () => clearInterval(interval)
   }, [match.match_id])
 
   const loadStats = async () => {
@@ -146,11 +149,13 @@ export default function MatchCard({ match, userPrediction, editCount = 0, onPred
             {stats && stats.total > 0 && (
               <div className="flex items-center gap-2">
                 {team1Stats.isPopular && (
-                  <span className="text-xs bg-orange-500 text-black font-bold px-2 py-0.5 rounded-full shadow-lg">
+                  <span className="text-xs bg-orange-500 text-black font-bold px-2 py-0.5 rounded-full shadow-lg animate-pulse">
                     🔥 Popular
                   </span>
                 )}
-                <span className="text-xs opacity-70">👥 {team1Stats.percentage}%</span>
+                <span className="text-xs font-bold bg-black/40 px-2 py-1 rounded-md">
+                  {team1Stats.count} ({team1Stats.percentage}%)
+                </span>
               </div>
             )}
           </div>
@@ -158,8 +163,12 @@ export default function MatchCard({ match, userPrediction, editCount = 0, onPred
         
         <div className="text-center">
           <span className="text-psl-yellow font-black text-xl sm:text-2xl neon-text">VS</span>
-          {stats && stats.total > 0 && (
-            <p className="text-xs text-gray-500 mt-1">{stats.total} prediction{stats.total !== 1 ? 's' : ''}</p>
+          {stats && stats.total > 0 ? (
+            <p className="text-xs text-gray-400 mt-1 font-semibold">
+              👥 {stats.total} prediction{stats.total !== 1 ? 's' : ''} made
+            </p>
+          ) : (
+            <p className="text-xs text-gray-500 mt-1">Be the first to predict!</p>
           )}
         </div>
         
@@ -177,11 +186,13 @@ export default function MatchCard({ match, userPrediction, editCount = 0, onPred
             {stats && stats.total > 0 && (
               <div className="flex items-center gap-2">
                 {team2Stats.isPopular && (
-                  <span className="text-xs bg-orange-500 text-black font-bold px-2 py-0.5 rounded-full shadow-lg">
+                  <span className="text-xs bg-orange-500 text-black font-bold px-2 py-0.5 rounded-full shadow-lg animate-pulse">
                     🔥 Popular
                   </span>
                 )}
-                <span className="text-xs opacity-70">👥 {team2Stats.percentage}%</span>
+                <span className="text-xs font-bold bg-black/40 px-2 py-1 rounded-md">
+                  {team2Stats.count} ({team2Stats.percentage}%)
+                </span>
               </div>
             )}
           </div>
