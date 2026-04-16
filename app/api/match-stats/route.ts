@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     if (error) throw error
 
     // Filter for final predictions in JavaScript instead of SQL
-    const finalPredictions = predictions?.filter(p => p.is_final === true || p.is_final === 'true' || p.is_final === 1) || []
+    const finalPredictions = predictions?.filter((p: any) => p.is_final === true || p.is_final === 'true' || p.is_final === 1) || []
 
     if (finalPredictions.length === 0) {
       return NextResponse.json({
