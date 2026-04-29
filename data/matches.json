@@ -42,5 +42,5 @@
   {"match_id":"psl2026_41","team1":"Peshawar Zalmi","team2":"Islamabad United","match_datetime":"2026-04-28T14:00:00Z","result":"Peshawar Zalmi"},
   {"match_id":"psl2026_42","team1":"Multan Sultans","team2":"Hyderabad Kingsmen","match_datetime":"2026-04-29T14:00:00Z","result":"Hyderabad Kingsmen"},
   {"match_id":"psl2026_43","team1":"Islamabad United","team2":"Hyderabad Kingsmen","match_datetime":"2026-05-01T14:00:00Z","result":null},
-  {"match_id":"psl2026_44","team1":"TBD","Peshawar Zalmi":"TBD","match_datetime":"2026-05-03T14:00:00Z","result":null}
+  {"match_id":"psl2026_44","team1":"Peshawar Zalmi","team2":"TBD","match_datetime":"2026-05-03T14:00:00Z","result":null}
 ]
