@@ -23,8 +23,21 @@ export async function GET(request: NextRequest) {
 
     if (error) throw error
 
+    console.log(`Raw predictions for ${matchId}:`, predictions)
+
     // Filter for final predictions in JavaScript instead of SQL
-    const finalPredictions = predictions?.filter((p: any) => p.is_final === true || p.is_final === 'true' || p.is_final === 1) || []
+    // Handle various possible values for is_final
+    const finalPredictions = predictions?.filter((p: any) => {
+      const isFinal = p.is_final === true || 
+                      p.is_final === 'true' || 
+                      p.is_final === 1 || 
+                      p.is_final === '1' ||
+                      String(p.is_final).toLowerCase() === 'true'
+      console.log(`Prediction: ${p.predicted_team}, is_final value: "${p.is_final}" (type: ${typeof p.is_final}), isFinal: ${isFinal}`)
+      return isFinal
+    }) || []
+
+    console.log(`Final predictions count for ${matchId}:`, finalPredictions.length)
 
     if (finalPredictions.length === 0) {
       return NextResponse.json({

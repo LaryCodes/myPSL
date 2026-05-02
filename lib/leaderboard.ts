@@ -47,6 +47,17 @@ export async function calculateLeaderboard(): Promise<LeaderboardEntry[]> {
 
     console.log(`Found ${predictions?.length || 0} predictions`)
 
+    // Fetch ultimate predictions for bonus points
+    const { data: ultimatePredictions, error: ultimateError } = await supabase
+      .from('ultimate_predictions')
+      .select('user_id, finals_points, champion_points')
+
+    if (ultimateError) {
+      console.error('Error fetching ultimate predictions:', ultimateError)
+    }
+
+    console.log(`Found ${ultimatePredictions?.length || 0} ultimate predictions`)
+
     const leaderboard: LeaderboardEntry[] = profiles.map((profile: any) => {
       let totalPoints = 0
       let currentStreak = 0
@@ -93,6 +104,16 @@ export async function calculateLeaderboard(): Promise<LeaderboardEntry[]> {
           currentStreak = 0
         }
       })
+
+      // Add Ultimate Call points
+      const ultimatePrediction = ultimatePredictions?.find(
+        (up: any) => up.user_id === profile.id
+      )
+      
+      if (ultimatePrediction) {
+        totalPoints += (ultimatePrediction.finals_points || 0)
+        totalPoints += (ultimatePrediction.champion_points || 0)
+      }
 
       return {
         user_id: profile.id,
